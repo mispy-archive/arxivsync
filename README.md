@@ -1,4 +1,4 @@
-# arxivsync-0.0.1
+# arxivsync-0.0.2
 
 Ruby OAI interface for harvesting the arXiv. Can be used to store and update an XML mirror of paper metadata, and parse the XML into Ruby objects to allow conversion into a friendlier format.
 
@@ -16,6 +16,8 @@ Ruby OAI interface for harvesting the arXiv. Can be used to store and update an 
   archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
   archive.sync
 ```
+
+Remember to leave at least a day between syncs-- the temporal granularity doesn't go any smaller than that.
 
 ### Reading from an archive
 
