@@ -1,24 +1,30 @@
-# Arxivsync
+# arxivsync-0.0.1
 
-TODO: Write a gem description
+Ruby OAI interface for harvesting the arXiv. Can be used to store and update an XML mirror of paper metadata, and parse the XML into Ruby objects to allow conversion into a friendlier format.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'arxivsync'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install arxivsync
+```
+  gem install arxivsync
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Downloading
+
+```
+  archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
+  archive.sync
+```
+
+### Reading an existing archive
+
+```
+  archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
+  archive.read_metadata do |paper|
+    p paper
+  end
+```
 
 ## Contributing
 
