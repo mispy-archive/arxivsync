@@ -1,4 +1,5 @@
 require 'oai'
+require 'nokogiri'
 require 'arxivsync/version'
 require 'arxivsync/parser'
 
@@ -6,12 +7,27 @@ module ArxivSync
   class XMLArchive
     def initialize(savedir, custom_params=nil)
       @savedir = savedir
-      @initial_params = custom_params || { metadataPrefix: 'arXiv' }
       @oai = OAI::Client.new 'http://export.arxiv.org/oai2'
     end
 
-    def sync
-      resp = @last_params ? retry_request : make_request(@initial_params)
+    # Parse the timestamp from the path to a previously saved
+    # arxiv xml block
+    def parse_dt(path)
+      DateTime.parse(path.split('/')[-1].split('_')[0])
+    end
+
+    def sync(initial_params={})
+      initial_params[:metadataPrefix] ||= 'arXiv'
+
+      # Get any existing xml files we may have, sorted by
+      # their download timestamps
+      existing = Dir.glob(File.join(@savedir, '*')).sort do |a,b|
+        parse_dt(a) <=> parse_dt(b)
+      end
+
+      last_response = Nokogiri(File.open(existing[-1])).css('responseDate')
+      
+      resp = @last_params ? retry_request : make_request(initial_params)
 
       while true
         if !resp.resumption_token
@@ -26,7 +42,7 @@ module ArxivSync
           end
         else # We have a resumption_token, keep going!
           save_response(resp)
-          resp = make_request(resumptionToken: resp.resumption_token)
+          resp = make_request(initial_params.merge(resumptionToken: resp.resumption_token))
         end
       end
 
@@ -34,11 +50,12 @@ module ArxivSync
     end
 
     def read_metadata(&b)
-      Dir.glob(File.join(@savedir, '*')).each do |path|
-        parser = Parser.new(&b)
-        Ox.sax_parse(parser, File.open(path))
-      end
+      doc = XMLDocument.new(&b)
+      parser = Nokogiri::XML::SAX::Parser.new(doc)
 
+      Dir.glob(File.join(@savedir, '*')).each do |path|
+        parser.parse_file(path)
+      end
     end
 
     def save_response(resp)

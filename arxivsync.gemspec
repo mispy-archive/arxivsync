@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest"
 
   spec.add_runtime_dependency "oai"
-  spec.add_runtime_dependency "ox"
+  spec.add_runtime_dependency "nokogiri"
 end

@@ -10,14 +10,14 @@ Ruby OAI interface for harvesting the arXiv. Can be used to store and update an 
 
 ## Usage
 
-### Downloading
+### Creating or updating an archive
 
 ```
   archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
   archive.sync
 ```
 
-### Reading an existing archive
+### Reading from an archive
 
 ```
   archive = ArxivSync::XMLArchive.new("/home/foo/savedir")

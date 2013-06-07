@@ -1,4 +1,4 @@
-require 'ox'
+require 'nokogiri'
 
 module ArxivSync
   Author = Struct.new(
@@ -10,51 +10,51 @@ module ArxivSync
     :primary_category, :crosslists
   )
 
-  class Parser < ::Ox::Sax
+  class XMLDocument < Nokogiri::XML::SAX::Document
     attr_accessor :models
 
     def initialize(&block)
-      @models = []
       @block = block
     end
 
-    def start_element(name)
+    def start_element(name, attributes=[])
       @el = name
       case name
-      when :author
+      when 'metadata'
+        @model = Paper.new
+        @authors = []
+      when 'author'
         @author = Author.new
       end
     end
 
-    def text(str)
+    def characters(str)
       case @el
-      when :id
-        @model = Paper.new
+      when 'id'
         @model.id = str
-        @authors = []
-      when :created
+      when 'created'
         @model.created = Date.parse(str)
-      when :updated
+      when 'updated'
         @model.updated = Date.parse(str)
-      when :title
+      when 'title'
         @model.title = str
-      when :abstract
+      when 'abstract'
         @model.abstract = str
-      when :categories
+      when 'categories'
         @model.primary_category = str.split[0]
         @model.crosslists = str.split.drop(1)
-      when :keyname
+      when 'keyname'
         @author.keyname = str
-      when :forenames
+      when 'forenames'
         @author.forenames = str
       end
     end
 
     def end_element(name)
       case name
-      when :author
+      when 'author'
         @authors.push(@author)
-      when :metadata # End of a paper entry
+      when 'metadata' # End of a paper entry
         #@paper.updated_date ||= @paper.pubdate # If no separate updated date
         #@paper.feed_id = Feed.get_or_create(@primary_category).id
         @model.authors = @authors
@@ -62,8 +62,6 @@ module ArxivSync
         if @block
           @block.call(@model)
         end
-
-        @models.push(@model)
       end
       @el = nil
     end
