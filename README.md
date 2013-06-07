@@ -17,7 +17,9 @@ Ruby OAI interface for harvesting the arXiv. Can be used to store and update an 
   archive.sync
 ```
 
-Remember to leave at least a day between syncs-- the temporal granularity doesn't go any smaller than that.
+Stores each XML response as an individual file, each containing up to 1000 records. Following an initial harvest, you can rerun this to add additional files containing all records since the last harvest.
+
+Remember to leave at least a day between syncs-- the temporal granularity doesn't go any smaller than that!
 
 ### Reading from an archive
 
@@ -27,6 +29,8 @@ Remember to leave at least a day between syncs-- the temporal granularity doesn'
     p paper
   end
 ```
+
+Parses the XML files using Nokogiri's SAX parser and yields Structs representing the metadata as it goes.
 
 ## Contributing
 
