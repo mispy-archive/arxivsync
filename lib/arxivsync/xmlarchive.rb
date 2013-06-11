@@ -62,11 +62,11 @@ module ArxivSync
     # Parses the archive using Nokogiri's SAX parser
     # Yields Paper objects as they are created
     def read_metadata(&b)
-      doc = XMLDocument.new(&b)
-      parser = Nokogiri::XML::SAX::Parser.new(doc)
+      parser = XMLParser.new
 
       Dir.glob(File.join(@savedir, '*')).each do |path|
         parser.parse_file(path)
+        b.call(parser.papers)
       end
     end
 

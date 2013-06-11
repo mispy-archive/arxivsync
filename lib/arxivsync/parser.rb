@@ -11,15 +11,13 @@ module ArxivSync
   )
 
   class XMLDocument < Nokogiri::XML::SAX::Document
-    attr_accessor :models
-
-    def initialize(&block)
-      @block = block
-    end
+    attr_accessor :papers
 
     def start_element(name, attributes=[])
       @el = name
       case name
+      when 'ListRecords'
+        @papers = []
       when 'metadata'
         @model = Paper.new
         @authors = []
@@ -59,11 +57,20 @@ module ArxivSync
         #@paper.feed_id = Feed.get_or_create(@primary_category).id
         @model.authors = @authors
 
-        if @block
-          @block.call(@model)
-        end
+        @papers.push(@model)
       end
       @el = nil
+    end
+  end
+
+  class XMLParser < Nokogiri::XML::SAX::Parser
+    def initialize
+      @doc = XMLDocument.new
+      super(@doc)
+    end
+
+    def papers
+      @doc.papers
     end
   end
 end
