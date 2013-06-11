@@ -10,7 +10,7 @@ module ArxivSync
   class << self
     def parse_xml(xml)
       parser = XMLParser.new
-      Ox.sax_parse(parser, xml)
+      Ox.sax_parse(parser, StringIO.new(xml))
       parser.papers
     end
 
