@@ -1,5 +1,6 @@
 require 'oai'
 require 'nokogiri'
+require 'ox'
 require 'arxivsync/version'
 require 'arxivsync/parser'
 require 'arxivsync/downloader'
@@ -9,7 +10,7 @@ module ArxivSync
   class << self
     def parse_xml(xml)
       parser = XMLParser.new
-      parser.parse(xml)
+      Ox.sax_parse(parser, xml)
       parser.papers
     end
 

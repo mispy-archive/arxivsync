@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "oai"
   spec.add_runtime_dependency "nokogiri"
+  spec.add_runtime_dependency "ox", ">= 2.0.2"
 end

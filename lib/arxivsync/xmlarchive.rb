@@ -65,7 +65,7 @@ module ArxivSync
       parser = XMLParser.new
 
       Dir.glob(File.join(@savedir, '*')).each do |path|
-        parser.parse_file(path)
+        Ox.sax_parse(parser, File.open(path))
         b.call(parser.papers)
       end
     end
