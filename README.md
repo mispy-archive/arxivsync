@@ -26,11 +26,23 @@ Remember to leave at least a day between syncs-- the temporal granularity doesn'
 ```
   archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
   archive.read_metadata do |paper|
-    p paper
+    # Do stuff with paper
   end
 ```
 
 Parses the XML files using Nokogiri's SAX parser and yields Structs representing the metadata as it goes.
+
+### Download and parse immediately
+
+If you just want arxivsync to do the request-cycle and parsing bits but handle storage yourself:
+
+```
+  ArxivSync.get_metadata(oai_params) do |resp, papers|
+    papers.each do |paper|
+      # Do stuff with paper
+    end 
+  end
+```
 
 ## Contributing
 
