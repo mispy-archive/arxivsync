@@ -41,12 +41,8 @@ module ArxivSync
 
         if last_token.empty? # Previous sync completed successfully
           responseDate = Date.parse(last_response.css('responseDate').text)
-          if responseDate == Date.today
-            puts "Last responseDate was today. arXiv lacks date granularity beyond the day level; please wait before continuing harvest."
-            return false
-          end
           puts "Downloading from last responseDate: #{responseDate}"
-          oai_params[:from] ||= responseDate
+          oai_params[:from] = responseDate
         else # Previous sync aborted prematurely, resume
           puts "Resuming download using previous resumptionToken: #{last_token}"
           oai_params = { resumptionToken: last_token }

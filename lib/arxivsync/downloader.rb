@@ -2,6 +2,12 @@ module ArxivSync
   class Downloader
     def initialize(initial_params={})
       @initial_params = initial_params
+
+      if @initial_params[:from] == Date.today
+        puts "Last responseDate was today. arXiv lacks date granularity beyond the day level; please wait before continuing harvest."
+        return false
+      end
+
       unless @initial_params[:resumptionToken]
         @initial_params[:metadataPrefix] ||= 'arXiv'
       end
