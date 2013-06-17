@@ -1,10 +1,14 @@
 module ArxivSync
+  # Layout reference: http://www.xmlns.me/?op=visualize&id=643
   Author = Struct.new(
-    :keyname, :forenames
+    :keyname, :forenames, :suffix, :affiliation
   )
 
   Paper = Struct.new(
-    :id, :created, :updated, :title, :abstract, :authors,
+    :id, :created, :updated, :authors, :title,
+    :msc_class, :report_no, :journal_ref, :comments,
+    :abstract, :categories, :doi, :proxy, :license,
+
     :primary_category, :crosslists
   )
 
@@ -38,15 +42,34 @@ module ArxivSync
         @model.updated = Date.parse(str)
       when :title
         @model.title = clean(str)
+      when :"msc-class"
+        @model.msc_class = str
+      when :"report-no"
+        @model.report_no = str
+      when :"journal-ref"
+        @model.journal_ref = str
+      when :comments
+        @model.comments = clean(str)
       when :abstract
         @model.abstract = clean(str)
       when :categories
+        @model.categories = str.split
         @model.primary_category = str.split[0]
         @model.crosslists = str.split.drop(1)
+      when :doi
+        @model.doi = str
+      when :proxy
+        @model.proxy = str
+      when :license
+        @model.license = str
       when :keyname
         @author.keyname = str
       when :forenames
         @author.forenames = str
+      when :suffix
+        @author.suffix = str
+      when :affiliation
+        @author.affiliation = str
       end
     end
 
