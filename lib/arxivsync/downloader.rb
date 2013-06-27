@@ -13,7 +13,7 @@ module ArxivSync
       end
       @last_params = nil
 
-      @oai = OAI::Client.new('http://export.arxiv.org/oai2', :parser => 'libxml')
+      @oai = OAI::Client.new('http://export.arxiv.org/oai2')
     end
 
     def start(&b)
