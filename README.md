@@ -25,12 +25,15 @@ Remember to leave at least a day between syncs-- the temporal granularity doesn'
 
 ```
   archive = ArxivSync::XMLArchive.new("/home/foo/savedir")
-  archive.read_metadata do |paper|
-    # Do stuff with paper
+  archive.read_metadata do |papers|
+    # Papers come in blocks of at most 1000 at a time
+    papers.each do |paper|
+      # Do stuff with papers
+    end
   end
 ```
 
-Parses the XML files using Nokogiri's SAX parser and yields Structs representing the metadata as it goes.
+Parses the XML files using a SAX parser and yields Structs representing the metadata as it goes.
 
 ### Download and parse immediately
 
