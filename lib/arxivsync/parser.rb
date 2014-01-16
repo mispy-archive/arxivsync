@@ -54,7 +54,8 @@ module ArxivSync
       when :title
         @model.title = clean(str)
       when :authors
-        @model.authors = clean(str).split(/,(?: and )*/)
+        @model.authors = clean(str).split(/,| and /)
+          .map { |s| clean(s) }.reject { |s| s.empty? }
       when :categories
         @model.categories = clean(str).split(/\s/)
       when :abstract
