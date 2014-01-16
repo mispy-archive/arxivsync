@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest"
 
   spec.add_runtime_dependency "oai"
-  spec.add_runtime_dependency "nokogiri"
-  spec.add_runtime_dependency "ox", ">= 2.0.2"
+  spec.add_runtime_dependency "colorize"
+  spec.add_runtime_dependency "ox", ">= 2.0.2" # Super-fast XML parser
+  spec.add_runtime_dependency "nokogiri" # Slower but more accurate parser
 end

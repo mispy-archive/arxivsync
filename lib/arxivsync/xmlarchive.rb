@@ -1,16 +1,25 @@
 module ArxivSync
   class XMLArchive
     def initialize(savedir, custom_params=nil)
-      @savedir = savedir
-      begin Dir.mkdir(@savedir) # Ensure this directory exists
-      rescue Errno::EEXIST
+      @savedir = File.expand_path(savedir)
+
+      if not Dir.exists?(@savedir)
+        puts "Creating new XML archive at #{@savedir}\n".light_green
+        Dir.mkdir(@savedir)
       end
     end
 
     # Parse the timestamp from the path to a previously saved
     # arxiv xml block
     def parse_dt(path)
-      DateTime.parse(path.split('/')[-1].split('_')[0])
+      begin
+        DateTime.parse(path.split('/')[-1].split('_')[0])
+      rescue ArgumentError
+        puts "Failed to parse timestamp from file #{path}\n".bold.light_red
+        puts ("Are you sure this is an archive directory?\n" +
+             "If so, it needs to be free of strange interloping files.").bold.light_white
+        exit 1
+      end
     end
 
     # Download from the arXiv!
@@ -31,9 +40,10 @@ module ArxivSync
       end
 
       if existing.empty?
-        puts "Commencing full arXiv download. This will take quite a while.\n" +
+        puts ("Commencing full arXiv download. This will take ... a while.\n" +
              "Download can be safely aborted at any point and will resume from\n" +
-             "last successful response."
+             "last successful response. However, resumptionTokens *will* expire\n" +
+             "if you leave it in an incomplete state for long enough.\n").bold.light_white
       else
         # Parse the most recent one
         last_response = Nokogiri::XML(File.open(existing[-1]))
@@ -41,10 +51,10 @@ module ArxivSync
 
         if last_token.empty? # Previous sync completed successfully
           responseDate = Date.parse(last_response.css('responseDate').text)
-          puts "Downloading from last responseDate: #{responseDate}"
+          puts "Downloading from last responseDate: #{responseDate}\n".bold.light_green
           oai_params[:from] = responseDate
         else # Previous sync aborted prematurely, resume
-          puts "Resuming download using previous resumptionToken: #{last_token}"
+          puts "Resuming download using previous resumptionToken: #{last_token}\n".bold.light_green
           oai_params = { resumptionToken: last_token }
         end
       end
@@ -97,7 +107,7 @@ module ArxivSync
       f = File.open("#{@savedir}/#{filename}", 'w')
       f.write(content)
       f.close
-      puts "Saved #{cursor+numRecords}/#{completeListSize} records to #{filename}"
+      puts "Saved #{cursor+numRecords} of #{completeListSize} records to #{filename}".light_green
     end
   end
 end

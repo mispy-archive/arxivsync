@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'arxivsync'
+require 'optparse'
+
+def arxivsync
+  optparse = OptionParser.new do |opts|
+    opts.banner = %Q{Usage: arxivsync ARCHIVE_DIR
+
+Begin or resume syncing a full copy of the arXiv
+metadata to ARCHIVE_DIR. The directory will be created 
+if it does not exist.}
+  end
+
+  optparse.parse!
+
+  if ARGV.empty?
+    puts optparse
+    exit 1
+  end
+
+  archive = ArxivSync::XMLArchive.new(ARGV[0])
+  archive.sync
+end
+
+if __FILE__ == $0
+  arxivsync
+end

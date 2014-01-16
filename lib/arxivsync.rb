@@ -1,6 +1,7 @@
 require 'oai'
 require 'nokogiri'
 require 'ox'
+require 'colorize'
 require 'arxivsync/version'
 require 'arxivsync/parser'
 require 'arxivsync/downloader'
