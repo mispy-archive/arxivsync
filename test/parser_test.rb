@@ -47,6 +47,11 @@ class TestParser < Minitest::Test
           assert_equal paper.abstract, "In the presence of the charged impurities, we study the weak localization (WL) effect by evaluating the quantum interference correction (QIC) to the conductivity of Dirac fermions in graphene. With the inelastic scattering rate due to electron-electron interactions obtained from our previous work, we investigate the dependence of QIC on the carrier concentration, the temperature, the magnetic field and the size of the sample. It is found that WL is present in large size samples at finite carrier doping. Its strength becomes weakened/quenched when the sample size is less than a few microns at low temperatures as studied in the experiments. In the region close to zero doping, the system may become delocalized. The minimum conductivity at low temperature for experimental sample sizes is found to be close to the data."
           tested += 1
         end
+
+        if paper.id == "0801.3713"
+          # Ensure latex-decode works properly
+          assert_equal "Jean-Claude Léon (LGS)", paper.authors[2]
+        end
       end
     end
 
