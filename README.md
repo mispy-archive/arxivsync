@@ -1,4 +1,4 @@
-# arxivsync 0.0.7
+# arxivsync 0.0.8
 
 Ruby OAI interface for harvesting the arXiv. Can be used to store and update an XML mirror of paper metadata, and parse the XML into Ruby objects to allow conversion into a friendlier format.
 
