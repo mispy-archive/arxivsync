@@ -13,19 +13,20 @@ class TestParser < Minitest::Test
       assert_equal papers.count, 1000
       papers.each do |paper|
         if paper.id == '0801.3673'
-          assert_equal paper.submitter, "N. C. Bacalis"
+          assert_equal "N. C. Bacalis", paper.submitter
 
-          assert_equal paper.versions.length, 1
-          assert_equal paper.versions[0].date, Time.parse("Wed, 23 Jan 2008 21:06:41 GMT")
-          assert_equal paper.versions[0].size, "121kb"
+          assert_equal 1, paper.versions.length
+          assert_equal Time.parse("Wed, 23 Jan 2008 21:06:41 GMT"), paper.versions[0].date
+          assert_equal "121kb", paper.versions[0].size
 
-          assert_equal paper.title, "Variational Functionals for Excited States"
+          assert_equal "Variational Functionals for Excited States", paper.title
+          assert_equal "Naoum C. Bacalis", paper.author_str
 
-          assert_equal paper.authors, ["Naoum C. Bacalis"]
-          assert_equal paper.categories, ["quant-ph"]
+          assert_equal ["Naoum C. Bacalis"], paper.authors
+          assert_equal ["quant-ph"], paper.categories
 
-          assert_equal paper.comments, "4 pages"
-          assert_equal paper.abstract, "Functionals that have local minima at the excited states of a non degenerate Hamiltonian are presented. Then, improved mutually orthogonal approximants of the ground and the first excited state are reported."
+          assert_equal "4 pages", paper.comments
+          assert_equal "Functionals that have local minima at the excited states of a non degenerate Hamiltonian are presented. Then, improved mutually orthogonal approximants of the ground and the first excited state are reported.", paper.abstract
           tested += 1
         end
 
@@ -39,8 +40,8 @@ class TestParser < Minitest::Test
           assert_equal paper.versions[1].size, "58kb"
           
           assert_equal paper.title, "Weak Localization of Dirac Fermions in Graphene"
-          assert_equal paper.authors, ["Xin-Zhong Yan", "C. S. Ting"]
-          assert_equal paper.categories, ["cond-mat.str-el"]
+          assert_equal ["Xin-Zhong Yan", "C. S. Ting"], paper.authors
+          assert_equal ["cond-mat.str-el"], paper.categories
           assert_equal paper.comments, "4 pages, 4 figures"
           assert_equal paper.journal_ref, "PRL 101, 126801 (2008)"
           assert_equal paper.doi, "10.1103/PhysRevLett.101.126801"

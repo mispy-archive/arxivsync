@@ -10,6 +10,7 @@ module ArxivSync
     :submitter, # 'N. C. Bacalis'
     :versions,
     :title, # "Variational Functionals for Excited States"
+    :author_str, # "Naoum C. Bacalis"
     :authors, # ['Naoum C. Bacalis']
     :categories, # ['quant-ph'] (primary category first, then crosslists)
     :abstract, # "Functionals that have local minima at the excited..."
@@ -87,10 +88,12 @@ module ArxivSync
       when :authors
         # Author strings may contain strange metadata
         # Non-regex parsing to handle nested parens
+        @model.author_str = decode(clean(str))
+
         depth = 0
         no_parens = ""
 
-        str.chars do |ch|
+        @model.author_str.chars do |ch|
           case ch
           when '('
             depth += 1
@@ -101,8 +104,8 @@ module ArxivSync
           end
         end
 
-        @model.authors = clean(no_parens).split(/,| and /)
-          .map { |s| decode(clean(s)) }
+        @model.authors = no_parens.split(/,|:|;|\sand\s|\s?the\s/i)
+          .map { |s| clean(s) }
           .reject { |s| s.empty? }
       when :categories
         @model.categories = clean(str).split(/\s/)
