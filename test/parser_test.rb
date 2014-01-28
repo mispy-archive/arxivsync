@@ -60,7 +60,7 @@ class TestParser < Minitest::Test
 
         # Ensure we parse html entities
         if paper.id == "0801.3778"
-          assert_equal "6 pages, 10 figures, to appear in \"Young massive clusters, initial conditions and environments\", typo in author’s name corrected", paper.comments
+          assert_equal "6 pages, 10 figures, to appear in \"Young massive clusters, initial conditions and environments\", typo in author's name corrected", paper.comments
         elsif paper.id == "0801.3789"
           assert_includes paper.abstract, "The addition of this \"conservative noise\" allows"
         end
