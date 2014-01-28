@@ -68,6 +68,11 @@ class TestParser < Minitest::Test
         if paper.id == "0801.3898"
           assert_equal ["A. Frasca", "Zs. Kovari", "K.G. Strassmeier", "K. Biazzo"], paper.authors
         end
+
+        # And those pesky "and"s
+        if paper.id == "0801.3674"
+          assert_equal ["Robert H. Brandenberger", "Keshav Dasgupta", "Anne-Christine Davis"], paper.authors
+        end
       end
     end
 

@@ -83,7 +83,7 @@ module ArxivSync
           end
         end
 
-        @model.authors = no_parens.split(/,| and /)
+        @model.authors = clean(no_parens).split(/,| and /)
           .map { |s| decode(clean(s)) }
           .reject { |s| s.empty? }
       when :categories
