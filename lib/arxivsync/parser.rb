@@ -50,11 +50,29 @@ module ArxivSync
 
     def decode(string)
       str = @entities.decode(string)
-      LaTeX::Decode::Base.normalize(str)
-      LaTeX::Decode::Accents.decode!(str)
-      LaTeX::Decode::Diacritics.decode!(str)
-      LaTeX::Decode::Symbols.decode!(str)
-      str
+
+      # Process latex entities -- except inside equations
+      decoded = ""
+      equation = false
+      segment = ""
+      str.chars do |ch|
+        if ch == '$' 
+          if !equation
+            decoded << LaTeX.decode(segment)
+            segment = ch
+          else
+            decoded << segment + ch
+            segment = ""
+          end
+
+          equation = !equation
+        else
+          segment << ch
+        end
+      end
+
+      decoded << LaTeX.decode(segment)
+      decoded.gsub('’', "'")
     end
 
     def text(str)

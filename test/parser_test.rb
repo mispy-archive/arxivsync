@@ -50,11 +50,11 @@ class TestParser < Minitest::Test
 
         # Ensure we handle TeX special characters
         if paper.id == "0801.3763"
-          assert_equal "Dijana Žilić", paper.authors[1]
+          assert_equal "Dijana Žilić", paper.authors[1]
 
           # But make sure we didn't try to parse any
           # complex math-- that cannot be unicode
-          assert_includes paper.abstract, "[Cu(bpy)$_3$]$_2$[Cr(C$_2$O$_4$)$_3$]NO$_3⋅$9H$_2$O"
+          assert_includes paper.abstract, "[Cu(bpy)$_3$]$_2$[Cr(C$_2$O$_4$)$_3$]NO$_3\\cdot $9H$_2$O"
         end
 
         # Ensure we parse html entities
