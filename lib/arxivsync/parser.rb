@@ -49,6 +49,24 @@ module ArxivSync
       str.gsub(/\s+/, ' ').strip
     end
 
+    # Like LaTeX.decode but without the punctuation weirdness
+    def latex_decode(str)
+      string = str.dup
+
+      LaTeX::Decode::Base.normalize(string)
+
+      LaTeX::Decode::Maths.decode!(string)
+
+      LaTeX::Decode::Accents.decode!(string)
+      LaTeX::Decode::Diacritics.decode!(string)
+      #LaTeX::Decode::Punctuation.decode!(string)
+      LaTeX::Decode::Symbols.decode!(string)
+
+      LaTeX::Decode::Base.strip_braces(string)
+
+      LaTeX.normalize_C(string)
+    end
+
     def decode(string)
       str = @entities.decode(string)
 
@@ -59,7 +77,7 @@ module ArxivSync
       str.chars do |ch|
         if ch == '$' 
           if !equation
-            decoded << LaTeX.decode(segment)
+            decoded << latex_decode(segment)
             segment = ch
           else
             decoded << segment + ch
@@ -72,8 +90,7 @@ module ArxivSync
         end
       end
 
-      decoded << LaTeX.decode(segment)
-      decoded.gsub('’', "'")
+      decoded << latex_decode(segment)
     end
 
     def text(str)
