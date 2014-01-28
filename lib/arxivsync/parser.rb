@@ -120,8 +120,6 @@ module ArxivSync
       when :version
         @model.versions.push(@version)
       when :metadata # End of a paper entry
-        @model.versions = @versions
-
         @papers.push(@model)
       end
       @el = nil
