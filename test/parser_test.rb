@@ -48,9 +48,25 @@ class TestParser < Minitest::Test
           tested += 1
         end
 
-        if paper.id == "0801.3713"
-          # Ensure latex-decode works properly
-          assert_equal "Jean-Claude Léon (LGS)", paper.authors[2]
+        # Ensure we handle TeX special characters
+        if paper.id == "0801.3763"
+          assert_equal "Dijana Žilić", paper.authors[1]
+
+          # But make sure we didn't try to parse any
+          # complex math-- that cannot be unicode
+          assert_includes paper.abstract, "[Cu(bpy)$_3$]$_2$[Cr(C$_2$O$_4$)$_3$]NO$_3⋅$9H$_2$O"
+        end
+
+        # Ensure we parse html entities
+        if paper.id == "0801.3778"
+          assert_equal "6 pages, 10 figures, to appear in \"Young massive clusters, initial conditions and environments\", typo in author's name corrected", paper.comments
+        elsif paper.id == "0801.3789"
+          assert_includes paper.abstract, "The addition of this \"conservative noise\" allows"
+        end
+
+        # And weird author strings
+        if paper.id == "0801.3898"
+          assert_equal ["A. Frasca", "Zs. Kovari", "K.G. Strassmeier", "K. Biazzo"], paper.authors
         end
       end
     end

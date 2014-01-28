@@ -27,6 +27,10 @@ module ArxivSync
   class XMLParser < ::Ox::Sax
     attr_accessor :papers
 
+    def initialize
+      @entities = HTMLEntities.new
+    end
+
     def start_element(name, attributes=[])
       @el = name
       case name
@@ -34,7 +38,7 @@ module ArxivSync
         @papers = []
       when :metadata
         @model = Paper.new
-        @versions = []
+        @model.versions = []
       when :version
         @version = Version.new
       end
@@ -44,27 +48,52 @@ module ArxivSync
       str.gsub(/\s+/, ' ').strip
     end
 
+    def decode(string)
+      str = @entities.decode(string)
+      LaTeX::Decode::Base.normalize(str)
+      LaTeX::Decode::Accents.decode!(str)
+      LaTeX::Decode::Diacritics.decode!(str)
+      LaTeX::Decode::Symbols.decode!(str)
+      str
+    end
+
     def text(str)
       case @el
       # Necessary elements
       when :id
         @model.id = clean(str)
       when :submitter
-        @model.submitter = clean(str)
+        @model.submitter = decode(clean(str))
       when :title
-        @model.title = clean(str)
+        @model.title = decode(clean(str))
       when :authors
-        regex = /(?:,| and )(?![^\(\)]*+\))/
-        @model.authors = clean(str).split(regex)
-          .map { |s| LaTeX.decode(clean(s)) }.reject { |s| s.empty? }
+        # Author strings may contain strange metadata
+        # Non-regex parsing to handle nested parens
+        depth = 0
+        no_parens = ""
+
+        str.chars do |ch|
+          case ch
+          when '('
+            depth += 1
+          when ')'
+            depth -= 1
+          else
+            no_parens << ch if depth == 0
+          end
+        end
+
+        @model.authors = no_parens.split(/,| and /)
+          .map { |s| decode(clean(s)) }
+          .reject { |s| s.empty? }
       when :categories
         @model.categories = clean(str).split(/\s/)
       when :abstract
-        @model.abstract = clean(str)
+        @model.abstract = decode(clean(str))
 
       # Optional elements
       when :comments
-        @model.comments = clean(str)
+        @model.comments = decode(clean(str))
       when :"msc-class"
         @model.msc_class = clean(str)
       when :"report-no"
@@ -89,7 +118,7 @@ module ArxivSync
     def end_element(name)
       case name
       when :version
-        @versions.push(@version)
+        @model.versions.push(@version)
       when :metadata # End of a paper entry
         @model.versions = @versions
 

@@ -25,7 +25,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "oai"
   spec.add_runtime_dependency "colorize"
-  spec.add_runtime_dependency "latex-decode"
+  spec.add_runtime_dependency "htmlentities", "~> 4.3.1"
+  spec.add_runtime_dependency "latex-decode", "~> 0.1.1"
   spec.add_runtime_dependency "ox", ">= 2.0.2" # Super-fast XML parser
   spec.add_runtime_dependency "nokogiri" # Slower but more accurate parser
 end
