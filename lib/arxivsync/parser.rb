@@ -49,7 +49,6 @@ module ArxivSync
       str.gsub(/\s+/, ' ').strip
     end
 
-    # Like LaTeX.decode but without the punctuation weirdness
     def latex_decode(str)
       string = str.dup
 
@@ -59,7 +58,7 @@ module ArxivSync
 
       LaTeX::Decode::Accents.decode!(string)
       LaTeX::Decode::Diacritics.decode!(string)
-      #LaTeX::Decode::Punctuation.decode!(string)
+      LaTeX::Decode::Punctuation.decode!(string)
       LaTeX::Decode::Symbols.decode!(string)
 
       LaTeX::Decode::Base.strip_braces(string)
