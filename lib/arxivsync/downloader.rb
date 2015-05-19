@@ -34,6 +34,7 @@ module ArxivSync
             break
           end
         else # We have a resumption_token, keep going!
+          sleep 20 # let's be extra cautious though
           b.call(resp)
           resp = make_request(resumptionToken: resp.resumption_token)
         end
