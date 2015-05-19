@@ -1,4 +1,4 @@
-# arxivsync 0.1.1
+# arxivsync 0.1.2
 
 Ruby OAI interface for harvesting the arXiv. Can be used to store and update an XML mirror of paper metadata, and parse the XML into Ruby objects to allow conversion into a friendlier format.
 
@@ -44,7 +44,7 @@ If you just want arxivsync to do the request-cycle and parsing bits but handle s
   ArxivSync.get_metadata(oai_params) do |resp, papers|
     papers.each do |paper|
       # Do stuff with paper
-    end 
+    end
   end
 ```
 
